@@ -1,4 +1,4 @@
-﻿namespace Fun.Json.Tools.Controls
+﻿namespace Fun.DevTools.Controls
 
 open System.IO
 open Microsoft.AspNetCore.Components.Forms
@@ -14,22 +14,6 @@ type InputFile' =
         let isDisabled = defaultArg isDisabled false
         
         html.fragment [
-            InputFile'() {
-                "hidden" => "true"
-                id inputId
-                accept accept'
-                OnChange(fun e -> task {
-                    try
-                        let stream = e.File.OpenReadStream(maxAllowedSize = 1024L * 1024L * 15L)
-                        use ms = new MemoryStream(int stream.Length)
-                        do! stream.CopyToAsync(ms)
-                        let data = ms.ToArray()
-                        do! upload (e, data)
-                    with ex ->
-                        (defaultArg onError ignore) (ex)
-                }
-                )
-            }
             match label' with
             | Some label' ->
                 MudButton'() {
@@ -51,4 +35,20 @@ type InputFile' =
                     Variant(defaultArg variant Variant.Text)
                     Disabled isDisabled
                 }
+            InputFile'() {
+                "hidden" => "true"
+                id inputId
+                accept accept'
+                OnChange(fun e -> task {
+                    try
+                        let stream = e.File.OpenReadStream(maxAllowedSize = 1024L * 1024L * 15L)
+                        use ms = new MemoryStream(int stream.Length)
+                        do! stream.CopyToAsync(ms)
+                        let data = ms.ToArray()
+                        do! upload (e, data)
+                    with ex ->
+                        (defaultArg onError ignore) (ex)
+                }
+                )
+            }
         ]

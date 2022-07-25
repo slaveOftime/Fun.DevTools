@@ -3,12 +3,12 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Components.WebAssembly.Hosting
 open MudBlazor.Services
 open Fun.Blazor
-open Fun.Json.Tools
+open Fun.DevTools
 
 let builder = WebAssemblyHostBuilder.CreateDefault(Environment.GetCommandLineArgs())
 
 #if DEBUG
-builder.AddFunBlazor("#app", html.hotReloadComp(app, "Fun.Json.Tools.App.app")) |> ignore
+builder.AddFunBlazor("#app", html.hotReloadComp(app, "Fun.DevTools.App.app")) |> ignore
 #else
 builder.AddFunBlazor("#app", app) |> ignore
 #endif

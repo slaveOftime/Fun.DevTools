@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Fun.Json.Tools": {
+    "Fun.DevTools": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

@@ -1,6 +1,6 @@
 Tips:
 
-1. Check the line in file Fun.Json.Tools.fsproj: 
+1. Check the line in file Fun.DevTools.fsproj: 
 
     It required MudBlazor. Also has attribute FunBlazorStyle.
 
@@ -19,9 +19,9 @@ Tips:
 ## Dev with hot-reload
 
     Open terminal and run
-    dotnet run --project .\Fun.Json.Tools\Fun.Json.Tools.fsproj
+    dotnet run --project .\Fun.DevTools\Fun.DevTools.fsproj
     
     Open terminal and run
-    fun-blazor watch .\Fun.Json.Tools\Fun.Json.Tools.fsproj
+    fun-blazor watch .\Fun.DevTools\Fun.DevTools.fsproj
 
     > require: dotnet tool install --global Fun.Blazor.Cli --version 2.0.*

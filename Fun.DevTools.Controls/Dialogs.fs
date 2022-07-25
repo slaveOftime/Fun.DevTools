@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module Fun.Json.Tools.Controls.Dialogs
+module Fun.DevTools.Controls.Dialogs
 
 open Fun.Blazor
 open MudBlazor

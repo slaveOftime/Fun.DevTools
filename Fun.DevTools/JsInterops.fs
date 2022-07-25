@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module Fun.Json.Tools.JsInterops
+module Fun.DevTools.JsInterops
 
 open Microsoft.JSInterop
 

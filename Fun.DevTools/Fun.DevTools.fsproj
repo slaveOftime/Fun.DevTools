@@ -5,7 +5,10 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="JsInterops.fs" />
-		<Compile Include="FlatJsonList.fs" />
+		<Compile Include="Hooks.fs" />
+		<Compile Include="FlatJsonList\Utils.fs" />
+		<Compile Include="FlatJsonList\Hooks.fs" />
+		<Compile Include="FlatJsonList\Components.fs" />
 		<Compile Include="App.fs" />
 		<Compile Include="Startup.fs" />
 	</ItemGroup>
@@ -20,7 +23,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.1" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Fun.Json.Tools.Controls\Fun.Json.Tools.Controls.fsproj" />
+		<ProjectReference Include="..\Fun.DevTools.Controls\Fun.DevTools.Controls.fsproj" />
 	</ItemGroup>
 
 	<!-- If you want to add package like below to trim package which is not trimmable by default, be sure you test it carefully -->

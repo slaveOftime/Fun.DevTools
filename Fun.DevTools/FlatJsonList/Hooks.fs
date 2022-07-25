@@ -1,0 +1,104 @@
+﻿[<AutoOpen>]
+module Fun.DevTools.FlatJsonList.Hooks
+
+open System
+open System.Text
+open System.Text.Json
+open System.Collections.Generic
+open System.Diagnostics
+open FSharp.Data.Adaptive
+open Microsoft.JSInterop
+open MudBlazor
+open Fun.Blazor
+open Fun.DevTools
+
+
+type State =
+    {
+        Spliter: string
+        Keys: string list
+        Jsons: Map<string, Dictionary<string, string>>
+        BaseJsonName: string option
+    }
+
+    static member DefaultValue = {
+        Spliter = "."
+        Keys = []
+        Jsons = Map.empty
+        BaseJsonName = None
+    }
+
+
+let private keyprefix = "FlatJsonList"
+
+
+type IComponentHook with
+
+    member hook.State = hook.ShareStore.CreateCVal(keyprefix + nameof hook.State, State.DefaultValue)
+
+    member hook.KeysFilter = hook.ShareStore.CreateCVal(keyprefix + nameof hook.KeysFilter, "")
+
+    member hook.KeysSortIsASC = hook.ShareStore.CreateCVal(keyprefix + nameof hook.KeysSortIsASC, true)
+
+
+    member hook.FilteredKeys = adaptive {
+        let! keys = hook.State |> AVal.map (fun x -> x.Keys)
+        let! filter = hook.KeysFilter
+        let! isAsc = hook.KeysSortIsASC
+        return
+            if String.IsNullOrEmpty filter then
+                keys :> string seq
+            else
+                keys |> Seq.filter (fun x -> x.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            |> (if isAsc then Seq.sort else Seq.sortDescending)
+            |> Seq.toList
+    }
+
+
+    member hook.ExportAll() = task {
+        let js, snack = hook.ServiceProvider.GetMultipleServices<IJSRuntime * ISnackbar>()
+        try
+            let sw = Stopwatch.StartNew()
+            let state = hook.State.Value
+
+            for KeyValue (fileName, parsedFile) in state.Jsons do
+                let jsonStr =
+                    parsedFile
+                    |> Seq.map (fun (KeyValue (k, v)) -> k, v)
+                    |> Seq.toList
+                    |> createJsonFromFlatList state.Spliter ""
+                    |> fun x -> JsonSerializer.Serialize(x, jsonSerializeOptions)
+                do! js.saveFile (fileName, jsonStr)
+
+            snack.Add($"Export all flat json spent {sw.ElapsedMilliseconds}ms") |> ignore
+
+        with ex ->
+            snack.Add(ex.Message, Severity.Error) |> ignore
+    }
+
+
+    member hook.DeleteFlatJson jsonName = hook.State.Publish(fun state -> { state with Jsons = state.Jsons |> Map.remove jsonName })
+
+
+    member hook.AddFlatJson(jsonName, data: byte[]) =
+        let snack = hook.ServiceProvider.GetMultipleServices<ISnackbar>()
+        try
+            let sw = Stopwatch.StartNew()
+
+            hook.State.Publish(fun state ->
+                let jsonStr = Encoding.UTF8.GetString data
+                let flattedJson = fromJsonToDict state.Spliter jsonStr
+                let isFirstJson = state.Jsons.Count = 0
+                let jsons = state.Jsons |> Map.add jsonName flattedJson
+
+                { state with
+                    Jsons = jsons
+                    BaseJsonName = if isFirstJson then Some jsonName else state.BaseJsonName
+                    Keys = if isFirstJson then jsons[jsonName].Keys |> Seq.toList else state.Keys
+                }
+            )
+
+            snack.Add($"Add flat json spent {sw.ElapsedMilliseconds}ms") |> ignore
+
+        with ex ->
+            snack.Add(ex.Message, Severity.Error) |> ignore

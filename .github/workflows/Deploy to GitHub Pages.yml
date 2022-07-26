@@ -25,8 +25,7 @@ jobs:
         dotnet publish Fun.DevTools/Fun.DevTools.fsproj -c Release -o Fun.DevTools.Release --nologo
     
 
-    # changes the base-tag in index.html from '/' to 'Fun.Blazor' to match GitHub Pages repository subdirectory
-    - name: Change base-tag in index.html from / to Fun.Blazor.Docs
+    - name: Change base-tag in index.html
       run: dotnet fsi build.fsx -t ProcessGitHubDocs
     
     # copy index.html to 404.html to serve the same file when a file is not found

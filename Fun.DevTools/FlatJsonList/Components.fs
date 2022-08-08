@@ -84,8 +84,10 @@ type FlatJsonList' =
             let jsonRowCell (keyValues: Generic.IDictionary<string, string>) jsonKey =
                 MudTd'() {
                     MudInput'() {
+                        style { width "100%" }
                         Value(if keyValues.ContainsKey jsonKey then keyValues[jsonKey] else "")
                         ValueChanged(fun x -> keyValues[jsonKey] <- x)
+                        FullWidth true
                     }
                 }
 
@@ -177,22 +179,41 @@ type FlatJsonList' =
                 }
                 div {
                     style {
-                        textAlignCenter
                         maxWidth 720
                         margin "auto"
                         marginBottom 10
                     }
-                    MudText'() {
-                        Typo Typo.subtitle2
-                        Color Color.Info
-                        "Flat and list json key values which can be used for translation files. Only UTF-8 file is supportted! The first uploaded file will be used as the base file which will provide the key column. All the json values will be treated as string."
-                    }
-                    adaptiview () {
-                        let! spliter = hook.State |> AVal.map (fun x -> x.Spliter)
-                        MudText'() {
-                            Typo Typo.subtitle2
-                            Color Color.Warning
-                            $"{spliter} is the splitter, so you should not use it in your key."
+                    ol {
+                        li {
+                            MudText'() {
+                                Typo Typo.subtitle2
+                                Color Color.Warning
+                                "The first uploaded file will be used as the base file which will provide the key column."
+                            }
+                        }
+                        li {
+                            adaptiview () {
+                                let! spliter = hook.State |> AVal.map (fun x -> x.Spliter)
+                                MudText'() {
+                                    Typo Typo.subtitle2
+                                    Color Color.Warning
+                                    $"{spliter} is the splitter, so you should not use it in your key."
+                                }
+                            }
+                        }
+                        li {
+                            MudText'() {
+                                Typo Typo.subtitle2
+                                Color Color.Info
+                                "Flat and list json key values which can be used for translation files. Only UTF-8 file is supportted!"
+                            }
+                        }
+                        li {
+                            MudText'() {
+                                Typo Typo.subtitle2
+                                Color Color.Info
+                                "All the json values will be treated as string."
+                            }
                         }
                     }
                 }

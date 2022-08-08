@@ -52,7 +52,7 @@ let app = div {
     MudThemeProvider'() { Theme darkTheme }
     MudDialogProvider'()
     MudSnackbarProvider'()
-    MudContainer'() {
+    div {
         style {
             height "100%"
             overflowHidden

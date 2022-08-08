@@ -51,7 +51,7 @@ type IComponentHook with
         hook.AddFirstAfterRenderTask(fun _ -> task {
             try
                 let! data = storage.GetItemAsync<State>(cachedStateKey)
-                hook.State.Publish data
+                if data |> box |> isNull |> not then hook.State.Publish data
             with ex ->
                 printfn "Load cache failed for FlatJsonlist: %s" ex.Message
 
@@ -142,4 +142,4 @@ type IComponentHook with
             snack.Add($"Add flat json spent {sw.ElapsedMilliseconds}ms") |> ignore
 
         with ex ->
-            snack.Add(ex.Message, Severity.Error) |> ignore
+            snack.Add(string ex, Severity.Error) |> ignore

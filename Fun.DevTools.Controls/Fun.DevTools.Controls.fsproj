@@ -14,6 +14,8 @@
     <Compile Include="InputFile.fs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageReference Include="FSharp.SystemTextJson" Version="0.19.13" />
     <PackageReference Include="Fun.Blazor" Version="2.1.1" />
     <PackageReference Include="MudBlazor" FunBlazorStyle="CE" Version="6.0.13" />
     <PackageReference FunBlazorNamespace="Microsoft.AspNetCore.Components" Include="Microsoft.AspNetCore.Components.Web" Version="6.0.7" />

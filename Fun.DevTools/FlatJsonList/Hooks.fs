@@ -2,6 +2,7 @@
 module Fun.DevTools.FlatJsonList.Hooks
 
 open System
+open System.Timers
 open System.Text
 open System.Text.Json
 open System.Collections.Generic
@@ -9,6 +10,7 @@ open System.Diagnostics
 open FSharp.Data.Adaptive
 open Microsoft.JSInterop
 open MudBlazor
+open Blazored.LocalStorage
 open Fun.Blazor
 open Fun.DevTools
 
@@ -31,6 +33,8 @@ type State =
 
 let private keyprefix = "FlatJsonList"
 
+let private cachedStateKey = keyprefix + "-State"
+
 
 type IComponentHook with
 
@@ -39,6 +43,30 @@ type IComponentHook with
     member hook.KeysFilter = hook.ShareStore.CreateCVal(keyprefix + nameof hook.KeysFilter, "")
 
     member hook.KeysSortIsASC = hook.ShareStore.CreateCVal(keyprefix + nameof hook.KeysSortIsASC, true)
+
+
+    member hook.InitFlatJsonList() =
+        let storage = hook.ServiceProvider.GetMultipleServices<ILocalStorageService>()
+
+        hook.AddFirstAfterRenderTask(fun _ -> task {
+            try
+                let! data = storage.GetItemAsync<State>(cachedStateKey)
+                hook.State.Publish data
+            with ex ->
+                printfn "Load cache failed for FlatJsonlist: %s" ex.Message
+
+            let timer = new Timer(Interval = 30_000)
+            hook.AddDispose timer
+            timer.Elapsed.Add(fun _ ->
+                task {
+                    do! storage.SetItemAsync(cachedStateKey, hook.State.Value)
+                    printfn "Cache state for FlatJsonList"
+                }
+                |> ignore
+            )
+            timer.Start()
+        }
+        )
 
 
     member hook.FilteredKeys = adaptive {
@@ -55,8 +83,19 @@ type IComponentHook with
     }
 
 
+    member hook.ClearAll() =
+        let storage = hook.ServiceProvider.GetMultipleServices<ILocalStorageService>()
+
+        storage.RemoveItemAsync cachedStateKey |> ignore
+
+        transact (fun _ ->
+            hook.State.Value <- State.DefaultValue
+            hook.KeysFilter.Value <- ""
+        )
+
+
     member hook.ExportAll() = task {
-        let js, snack = hook.ServiceProvider.GetMultipleServices<IJSRuntime * ISnackbar>()
+        let js, snack, storage = hook.ServiceProvider.GetMultipleServices<IJSRuntime * ISnackbar * ILocalStorageService>()
         try
             let sw = Stopwatch.StartNew()
             let state = hook.State.Value
@@ -69,6 +108,8 @@ type IComponentHook with
                     |> createJsonFromFlatList state.Spliter ""
                     |> fun x -> JsonSerializer.Serialize(x, jsonSerializeOptions)
                 do! js.saveFile (fileName, jsonStr)
+
+            do! storage.RemoveItemAsync cachedStateKey
 
             snack.Add($"Export all flat json spent {sw.ElapsedMilliseconds}ms") |> ignore
 

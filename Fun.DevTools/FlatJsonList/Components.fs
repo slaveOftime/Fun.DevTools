@@ -13,6 +13,8 @@ open Fun.DevTools.FlatJsonList
 type FlatJsonList' =
     static member create() =
         html.comp (fun (hook: IComponentHook, dialog: IDialogService) ->
+            hook.InitFlatJsonList()
+            
             let addNewKey () =
                 dialog.Show(fun ctx ->
                     MudDialog'() {
@@ -127,12 +129,7 @@ type FlatJsonList' =
                             "Export all"
                         }
                         MudButton'() {
-                            OnClick(fun _ ->
-                                transact (fun _ ->
-                                    hook.State.Value <- State.DefaultValue
-                                    hook.KeysFilter.Value <- ""
-                                )
-                            )
+                            OnClick(ignore >> hook.ClearAll)
                             StartIcon Icons.Filled.ClearAll
                             "Clear"
                         }

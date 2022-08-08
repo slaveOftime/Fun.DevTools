@@ -24,6 +24,8 @@ jobs:
         dotnet tool restore
         dotnet publish Fun.DevTools/Fun.DevTools.fsproj -c Release -o Fun.DevTools.Release --nologo
     
+    - name: Test
+      run: dotnet test
 
     - name: Change base-tag in index.html
       run: dotnet fsi build.fsx -t ProcessGitHubDocs

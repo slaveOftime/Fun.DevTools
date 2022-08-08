@@ -41,7 +41,7 @@ let rec createJsonFromFlatList spliter (path: string) (parsedFile: List<string *
         elif String.IsNullOrEmpty str2 then str1
         else str1 + spliter + str2
 
-    let inline getKey (key: string) =
+    let inline getKey path (key: string) =
         let startIndex = if String.IsNullOrEmpty path then 0 else path.Length + 1
         let subKey = key.Substring startIndex
         let spliterIndex = subKey.IndexOf spliter
@@ -55,13 +55,16 @@ let rec createJsonFromFlatList spliter (path: string) (parsedFile: List<string *
         |> List.partition (fun (key, _) -> key.Length <= subPath.Length || not (key.Substring(subPath.Length + 1).Contains(spliter)))
 
     parsedFile
-    |> List.groupBy (fst >> getKey)
+    |> List.groupBy (fst >> getKey path)
     |> List.map (fun (name, ls) ->
         let subPath = path </> name
         let flatedKeyValues, restKeyValues = splitKeyValues subPath ls
 
         let keyValues =
-            let kvs = flatedKeyValues |> List.map (fun (k, v) -> Generic.KeyValuePair(k, JsonValue.Create v)) |> Generic.Dictionary
+            let kvs =
+                flatedKeyValues
+                |> List.map (fun (k, v) -> Generic.KeyValuePair(getKey subPath k, JsonValue.Create v))
+                |> Generic.Dictionary
             createJsonFromFlatList spliter subPath restKeyValues
             |> Seq.fold
                 (fun (state: Generic.Dictionary<_, _>) (KeyValue (k, v)) ->

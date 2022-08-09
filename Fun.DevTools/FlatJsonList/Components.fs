@@ -219,6 +219,7 @@ type FlatJsonList' =
                     style {
                         marginTop 20
                         textAlignCenter
+                        textTransformUppercase
                     }
                     Typo Typo.h5
                     Color Color.Primary

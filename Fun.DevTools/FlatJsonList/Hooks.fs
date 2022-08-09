@@ -31,20 +31,38 @@ type State =
     }
 
 
-let private keyprefix = "FlatJsonList"
+let private keyPrefix = "FlatJsonList"
 
-let private cachedStateKey = keyprefix + "-State"
+let private cachedStateKey = keyPrefix + "-State"
 
 
 type IComponentHook with
 
-    member hook.State = hook.ShareStore.CreateCVal(keyprefix + nameof hook.State, State.DefaultValue)
+    member hook.State = hook.ShareStore.CreateCVal(keyPrefix + nameof hook.State, State.DefaultValue)
 
-    member hook.KeysFilter = hook.ShareStore.CreateCVal(keyprefix + nameof hook.KeysFilter, "")
+    member hook.KeysFilter = hook.ShareStore.CreateCVal(keyPrefix + nameof hook.KeysFilter, "")
 
-    member hook.KeysSortIsASC = hook.ShareStore.CreateCVal(keyprefix + nameof hook.KeysSortIsASC, true)
+    member hook.KeysSortIsASC = hook.ShareStore.CreateCVal(keyPrefix + nameof hook.KeysSortIsASC, true)
+
+    /// Use this to trigger minimal rendering calculation
+    member hook.JsonKeyRefresher = hook.ShareStore.CreateCVal(keyPrefix + nameof hook.JsonKeyRefresher, ("", 0))
 
 
+    member hook.FilteredKeys = adaptive {
+        let! keys = hook.State |> AVal.map (fun x -> x.Keys)
+        let! filter = hook.KeysFilter
+        let! isAsc = hook.KeysSortIsASC
+        return
+            if String.IsNullOrEmpty filter then
+                keys :> string seq
+            else
+                keys |> Seq.filter (fun x -> x.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            |> (if isAsc then Seq.sort else Seq.sortDescending)
+            |> Seq.toList
+    }
+    
+
+    /// Load data from local cache and set auto save timer
     member hook.InitFlatJsonList() =
         let storage = hook.ServiceProvider.GetMultipleServices<ILocalStorageService>()
 
@@ -67,20 +85,6 @@ type IComponentHook with
             timer.Start()
         }
         )
-
-
-    member hook.FilteredKeys = adaptive {
-        let! keys = hook.State |> AVal.map (fun x -> x.Keys)
-        let! filter = hook.KeysFilter
-        let! isAsc = hook.KeysSortIsASC
-        return
-            if String.IsNullOrEmpty filter then
-                keys :> string seq
-            else
-                keys |> Seq.filter (fun x -> x.Contains(filter, StringComparison.OrdinalIgnoreCase))
-            |> (if isAsc then Seq.sort else Seq.sortDescending)
-            |> Seq.toList
-    }
 
 
     member hook.ClearAll() =

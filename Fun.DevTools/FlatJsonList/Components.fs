@@ -4,42 +4,51 @@ namespace Fun.DevTools
 open System.Collections
 open FSharp.Data.Adaptive
 open MudBlazor
-open Fun.Result
 open Fun.Blazor
 open Fun.DevTools.Controls
 open Fun.DevTools.FlatJsonList
 
 
 type FlatJsonList' =
+
     static member create() =
-        html.comp (fun (hook: IComponentHook, dialog: IDialogService) ->
+        html.comp (fun (hook: IComponentHook) ->
             hook.InitFlatJsonList()
-            
-            let addNewKey () =
-                dialog.Show(fun ctx ->
-                    MudDialog'() {
-                        Options(DialogOptions(MaxWidth = MaxWidth.Small))
-                        DialogContent(
-                            MudTextField'() {
-                                style { width "300px" }
-                                Label "Input and press Enter to add new key"
-                                ValueChanged(
-                                    function
-                                    | SafeString x ->
-                                        ctx.Close()
-                                        hook.State.Publish(fun state -> { state with Keys = x :: state.Keys |> List.distinct })
-                                    | _ -> ()
-                                )
-                            }
+
+
+            let mainActions = div {
+                style {
+                    flexShrink 0
+                    displayFlex
+                    alignItemsCenter
+                    justifyContentCenter
+                    marginTop 10
+                    marginBottom 15
+                }
+                MudButtonGroup'() {
+                    Size Size.Small
+                    Variant Variant.Filled
+                    Color Color.Primary
+                    childContent [
+                        InputFile'.upload (
+                            "*.json",
+                            (fun (e, data) -> task { hook.AddFlatJson(e.File.Name, data) }),
+                            label' = "Add file",
+                            startIcon = Icons.Filled.Add
                         )
-                        DialogActions [
-                            MudButton'() {
-                                OnClick(ignore >> ctx.Close)
-                                "Close"
-                            }
-                        ]
-                    }
-                )
+                        MudButton'() {
+                            OnClick(ignore >> hook.ExportAll)
+                            StartIcon Icons.Filled.SaveAlt
+                            "Export all"
+                        }
+                        MudButton'() {
+                            OnClick(ignore >> hook.ClearAll)
+                            StartIcon Icons.Filled.ClearAll
+                            "Clear"
+                        }
+                    ]
+                }
+            }
 
 
             let keyHeader =
@@ -66,12 +75,11 @@ type FlatJsonList' =
                             }
                         }
                         MudIconButton'() {
-                            OnClick(ignore >> addNewKey)
+                            OnClick(fun _ -> openAddNewKeyDialog hook)
                             Icon Icons.Filled.Add
                         }
                     }
                 }
-
 
             let jsonHeader isBaseJson (jsonName: string) =
                 MudTh'() {
@@ -82,59 +90,47 @@ type FlatJsonList' =
                     }
                 }
 
+            let jsonKeyRowCell (jsonKey: string) =
+                MudTd'() {
+                    style {
+                        displayFlex
+                        alignItemsCenter
+                        justifyContentSpaceBetween
+                    }
+                    span {
+                        style { flexGrow 1 }
+                        jsonKey
+                    }
+                    MudButtonGroup'() {
+                        style { marginLeft 10 }
+                        Size Size.Small
+                        Variant Variant.Text
+                        MudIconButton'() {
+                            OnClick(fun _ -> openConfirmDeleteDialog hook jsonKey)
+                            Icon Icons.Filled.Clear
+                        }
+                        MudIconButton'() {
+                            OnClick(fun _ -> openDetailEditorDialog hook jsonKey)
+                            Icon Icons.Filled.EditNote
+                        }
+                    }
+                }
 
             let jsonRowCell (keyValues: Generic.IDictionary<string, string>) jsonKey =
                 MudTd'() {
-                    MudInput'() {
-                        style { width "100%" }
-                        Value(if keyValues.ContainsKey jsonKey then keyValues[jsonKey] else "")
-                        ValueChanged(fun x -> keyValues[jsonKey] <- x)
-                        FullWidth true
+                    adaptiview () {
+                        let! _ = hook.JsonKeyRefresher |> AVal.map (fun (k, r) -> if k = jsonKey then r else 0)
+                        MudInput'() {
+                            style { width "100%" }
+                            Value(if keyValues.ContainsKey jsonKey then keyValues[jsonKey] else "")
+                            ValueChanged(fun x -> keyValues[jsonKey] <- x)
+                            FullWidth true
+                        }
                     }
                 }
 
 
-            fragment {
-                MudText'() {
-                    style {
-                        marginTop 20
-                        textAlignCenter
-                    }
-                    Typo Typo.h5
-                    Color Color.Primary
-                    "Flat multiple JSON files to compare"
-                }
-                div {
-                    style {
-                        flexShrink 0
-                        displayFlex
-                        alignItemsCenter
-                        justifyContentCenter
-                        marginTop 10
-                        marginBottom 15
-                    }
-                    MudButtonGroup'() {
-                        Size Size.Small
-                        Variant Variant.Outlined
-                        Color Color.Primary
-                        InputFile'.upload (
-                            "*.json",
-                            (fun (e, data) -> task { hook.AddFlatJson(e.File.Name, data) }),
-                            label' = "Add file",
-                            startIcon = Icons.Filled.Add
-                        )
-                        MudButton'() {
-                            OnClick(ignore >> hook.ExportAll)
-                            StartIcon Icons.Filled.SaveAlt
-                            "Export all"
-                        }
-                        MudButton'() {
-                            OnClick(ignore >> hook.ClearAll)
-                            StartIcon Icons.Filled.ClearAll
-                            "Clear"
-                        }
-                    }
-                }
+            let table =
                 adaptiview () {
                     let! jsons = hook.State |> AVal.map (fun x -> x.Jsons)
                     let! baseJsonName = hook.State |> AVal.map (fun x -> x.BaseJsonName)
@@ -165,7 +161,7 @@ type FlatJsonList' =
                         ]
                         RowTemplate(fun jsonKey ->
                             html.fragment [
-                                MudTd'() { jsonKey }
+                                jsonKeyRowCell jsonKey
                                 if baseJsonName.IsSome && jsons.ContainsKey baseJsonName.Value then
                                     jsonRowCell jsons[baseJsonName.Value] jsonKey
                                 for KeyValue (jsonName, keyValues) in jsons do
@@ -174,45 +170,62 @@ type FlatJsonList' =
                         )
                     }
                 }
-                div {
-                    style {
-                        maxWidth 720
-                        margin "auto"
-                        marginBottom 10
+
+
+            let tips = div {
+                style {
+                    maxWidth 720
+                    margin "auto"
+                    marginBottom 10
+                }
+                ol.create [
+                    li {
+                        MudText'() {
+                            Typo Typo.subtitle2
+                            Color Color.Warning
+                            "The first uploaded file will be used as the base file which will provide the key column."
+                        }
                     }
-                    ol {
-                        li {
+                    li {
+                        adaptiview () {
+                            let! spliter = hook.State |> AVal.map (fun x -> x.Spliter)
                             MudText'() {
                                 Typo Typo.subtitle2
                                 Color Color.Warning
-                                "The first uploaded file will be used as the base file which will provide the key column."
-                            }
-                        }
-                        li {
-                            adaptiview () {
-                                let! spliter = hook.State |> AVal.map (fun x -> x.Spliter)
-                                MudText'() {
-                                    Typo Typo.subtitle2
-                                    Color Color.Warning
-                                    $"{spliter} is the splitter, so you should not use it in your key."
-                                }
-                            }
-                        }
-                        li {
-                            MudText'() {
-                                Typo Typo.subtitle2
-                                Color Color.Info
-                                "Flat and list json key values which can be used for translation files. Only UTF-8 file is supportted!"
-                            }
-                        }
-                        li {
-                            MudText'() {
-                                Typo Typo.subtitle2
-                                Color Color.Info
-                                "All the json values will be treated as string."
+                                $"{spliter} is the splitter, so you should not use it in your key."
                             }
                         }
                     }
+                    li {
+                        MudText'() {
+                            Typo Typo.subtitle2
+                            Color Color.Info
+                            "Flat and list json key values which can be used for translation files. Only UTF-8 file is supportted!"
+                        }
+                    }
+                    li {
+                        MudText'() {
+                            Typo Typo.subtitle2
+                            Color Color.Info
+                            "All the json values will be treated as string."
+                        }
+                    }
+                ]
+            }
+
+
+            fragment {
+                MudText'() {
+                    style {
+                        marginTop 20
+                        textAlignCenter
+                    }
+                    Typo Typo.h5
+                    Color Color.Primary
+                    "Flat multiple JSON files to compare"
                 }
+                mainActions
+                table
+                tips
             }
         )

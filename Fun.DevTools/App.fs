@@ -2,6 +2,7 @@
 [<AutoOpen>]
 module Fun.DevTools.App
 
+open Microsoft.AspNetCore.Components.Web
 open Fun.Blazor
 open MudBlazor
 
@@ -52,13 +53,28 @@ let app = div {
     MudThemeProvider'() { Theme darkTheme }
     MudDialogProvider'()
     MudSnackbarProvider'()
-    div {
-        style {
-            height "100%"
-            overflowHidden
-            displayFlex
-            flexDirectionColumn
+    ErrorBoundary'() {
+        ErrorContent(fun ex ->
+            MudPaper'() {
+                style {
+                    padding 10
+                    margin 20
+                }
+                Elevation 10
+                MudAlert'() {
+                    Severity Severity.Error
+                    ex.Message
+                }
+            }
+        )
+        div {
+            style {
+                height "100%"
+                overflowHidden
+                displayFlex
+                flexDirectionColumn
+            }
+            FlatJsonList'.create ()
         }
-        FlatJsonList'.create ()
     }
 }

@@ -14,14 +14,14 @@
 		<Compile Include="Startup.fs" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Fun.Blazor.Wasm" Version="2.1.1" />
-		<PackageReference Include="Fun.Blazor.HotReload" Version="2.1.1" />
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.7.4">
+		<PackageReference Include="Fun.Blazor.Wasm" Version="2.1.2" />
+		<PackageReference Include="Fun.Blazor.HotReload" Version="2.1.2" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.4">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.7" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.7" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.13" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Fun.DevTools.Controls\Fun.DevTools.Controls.fsproj" />

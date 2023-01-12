@@ -17,7 +17,7 @@ type InputFile' =
             match label' with
             | Some label' ->
                 MudButton'() {
-                    ``for`` inputId
+                    for' inputId
                     HtmlTag "label"
                     Size(defaultArg size' Size.Small)
                     StartIcon(defaultArg startIcon Icons.Filled.Upload)
@@ -28,7 +28,7 @@ type InputFile' =
                 }
             | None ->
                 MudIconButton'() {
-                    ``for`` inputId
+                    for' inputId
                     HtmlTag "label"
                     Size(defaultArg size' Size.Small)
                     Icon(defaultArg startIcon Icons.Filled.Upload)

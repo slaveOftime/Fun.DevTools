@@ -3,7 +3,9 @@
 module Fun.DevTools.App
 
 open Microsoft.AspNetCore.Components.Web
+open Microsoft.AspNetCore.Components.Routing
 open Fun.Blazor
+open Fun.Blazor.Router
 open MudBlazor
 
 
@@ -67,14 +69,46 @@ let app = div {
                 }
             }
         )
-        div {
-            style {
-                height "100%"
-                overflowHidden
-                displayFlex
-                flexDirectionColumn
+        childContent [
+            MudLayout'() {
+                childContent [
+                    MudDrawer'() {
+                        Open true
+                        Fixed true
+                        Elevation 5
+                        Variant DrawerVariant.Persistent
+                        childContent [
+                            MudDrawerHeader'() {
+                                "Fun Dev Tool"
+                            }
+                            MudDivider'.create()
+                            MudNavLink'() {
+                                Match NavLinkMatch.All
+                                Href "/"
+                                "Flat Json List"
+                            }
+                            MudNavLink'() {
+                                Match NavLinkMatch.All
+                                Href "/html-to-fun-blazor"
+                                "Html to Fun.Blazor"
+                            }
+                        ]
+                    }
+                    MudMainContent'() {
+                        style {
+                            height "100%"
+                            overflowHidden
+                            displayFlex
+                            flexDirectionColumn
+                            padding 10
+                        }
+                        html.route [
+                            routeCi "/html-to-fun-blazor" (HtmlToFunBlazor'.create())
+                            routeAny (FlatJsonList'.create ())
+                        ]
+                    }
+                ]
             }
-            FlatJsonList'.create ()
-        }
+        ]
     }
 }

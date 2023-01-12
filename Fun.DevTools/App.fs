@@ -79,17 +79,20 @@ let app = div {
                         Variant DrawerVariant.Persistent
                         childContent [
                             MudDrawerHeader'() {
-                                "Fun Dev Tool"
+                                MudText'() {
+                                    Typo Typo.h5
+                                    Color Color.Primary
+                                    "Fun Dev Tool"
+                                }
                             }
-                            MudDivider'.create()
                             MudNavLink'() {
                                 Match NavLinkMatch.All
-                                Href "/"
+                                Href ""
                                 "Flat Json List"
                             }
                             MudNavLink'() {
                                 Match NavLinkMatch.All
-                                Href "/html-to-fun-blazor"
+                                Href "html-to-fun-blazor"
                                 "Html to Fun.Blazor"
                             }
                         ]

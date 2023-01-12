@@ -39,8 +39,14 @@ let convert (html: string) =
             for attr in node.Attributes() do
                 let attrName =
                     match attr.Name() with
-                    | "class" -> "class'"
-                    | "style" -> "style'"
+                    | "for"
+                    | "type"
+                    | "class"
+                    | "async"
+                    | "open"
+                    | "span"
+                    | "title"
+                    | "style" -> attr.Name() + "'"
                     | _ -> attr.Name()
 
                 let attrValue = attr.Value()

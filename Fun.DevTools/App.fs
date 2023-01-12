@@ -106,7 +106,11 @@ let app = div {
                             padding 10
                         }
                         html.route [
-                            routeCi "/html-to-fun-blazor" (HtmlToFunBlazor'.create())
+                            let routes = [
+                                routeCi "/html-to-fun-blazor" (HtmlToFunBlazor'.create())
+                            ]
+                            yield! routes
+                            subRouteCi "/Fun.DevTools.Docs" routes
                             routeAny (FlatJsonList'.create ())
                         ]
                     }

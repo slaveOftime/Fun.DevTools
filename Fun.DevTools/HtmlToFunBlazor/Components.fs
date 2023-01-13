@@ -17,6 +17,18 @@ type HtmlToFunBlazor' =
         let mutable inputEditorRef = Option<MonacoEditor>.None
         let mutable outputEditorRef = Option<MonacoEditor>.None
 
+        let convert () = task {
+            try 
+                let result = convert inputString.Value 
+                outputString.Publish result
+                match outputEditorRef with
+                | None -> ()
+                | Some e -> do! e.SetValue result
+                snackbar.Add("Converted successfully", severity = Severity.Success) |> ignore
+            with ex ->
+                snackbar.Add(ex.Message, severity = Severity.Error) |> ignore
+        }
+
         let inputEditor =
             MudPaper'() {
                 class' "p-2"
@@ -71,16 +83,6 @@ type HtmlToFunBlazor' =
             }
 
         html.fragment [
-            MudText'() {
-                style {
-                    marginTop 20
-                    textAlignCenter
-                    textTransformUppercase
-                }
-                Typo Typo.h5
-                Color Color.Primary
-                "Convert html to Fun.Blazor syntax"
-            }
             div {
                 style {
                     displayFlex
@@ -88,21 +90,24 @@ type HtmlToFunBlazor' =
                     justifyContentCenter
                     margin 20
                 }
-                MudButton'() {
-                    OnClick(fun _ -> task {
-                        try 
-                            let result = convert inputString.Value 
-                            outputString.Publish result
-                            match outputEditorRef with
-                            | None -> ()
-                            | Some e -> do! e.SetValue result
-                        with ex ->
-                            outputString.Publish ex.Message
-                    })
-                    Color Color.Primary
-                    Variant Variant.Filled
-                    "Convert"
-                }
+                childContent [
+                    MudText'() {
+                        style {
+                            textAlignCenter
+                            textTransformUppercase
+                            marginRight 15
+                        }
+                        Typo Typo.h5
+                        Color Color.Primary
+                        "Convert html to Fun.Blazor syntax"
+                    }
+                    MudButton'() {
+                        OnClick(fun _ -> convert())
+                        Color Color.Primary
+                        Variant Variant.Filled
+                        "Convert"
+                    }
+                ]
             }
             MudGrid'() {
                 style {

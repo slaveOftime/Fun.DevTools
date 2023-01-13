@@ -6,9 +6,9 @@ open Microsoft.JSInterop
 open MudBlazor
 open BlazorMonaco
 open Fun.Blazor
-open Fun.DevTools.HtmlToFunBlazor
+open Fun.DevTools.HtmlConvert
 
-type HtmlToFunBlazor' =
+type HtmlConvert' =
 
     static member create () = html.inject (fun (jsRuntime: IJSRuntime, snackbar: ISnackbar) ->
         let inputString = cval ""
@@ -99,7 +99,7 @@ type HtmlToFunBlazor' =
                         }
                         Typo Typo.h5
                         Color Color.Primary
-                        "Convert html to Fun.Blazor syntax"
+                        "Convert html to CE syntax"
                     }
                     MudButton'() {
                         OnClick(fun _ -> convert())

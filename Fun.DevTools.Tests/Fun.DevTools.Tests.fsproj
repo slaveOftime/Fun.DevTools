@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Compile Include="FlatJsonListTests.fs" />
+    <Compile Include="HtmlConvertTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

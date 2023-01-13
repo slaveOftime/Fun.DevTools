@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module Fun.DevTools.HtmlToFunBlazor.Utils
+module Fun.DevTools.HtmlConvert.Utils
 
 open System
 open System.Text
@@ -10,7 +10,9 @@ type StringBuilder with
 
     member sb.AppendStringValue(value: string) =
         match value with
-        | NullOrEmptyString -> sb
+        | NullOrEmptyString -> sb.Append("")
+        | SafeStringLower "true" -> sb.Append("true")
+        | SafeStringLower "false" -> sb.Append("false")
         | INT32 x -> sb.Append(x)
         | _ -> sb.Append("\"").Append(value.Trim()).Append("\"")
 
@@ -27,9 +29,12 @@ let convert (html: string) =
             if deep > 0 then String.Concat([|for _ in 0..deep -> "    "|])
             else ""
 
-        if node.NodeType = HtmlNodeType.Text || node.NodeType = HtmlNodeType.Comment then
+        if node.NodeType = HtmlNodeType.Text then
             if node.InnerHtml.Trim() |> String.IsNullOrEmpty |> not then
                 sb.Append(indent).AppendStringValue(node.InnerHtml.Trim()).AppendLine() |> ignore
+
+        else if node.NodeType = HtmlNodeType.Comment then
+            sb.Append(indent).Append("// ").Append(node.InnerHtml.Trim()).AppendLine() |> ignore
 
         else
             let name = node.Name
@@ -39,15 +44,7 @@ let convert (html: string) =
                     if Char.IsUpper name[0] then name + "'()"
                     else name
                 
-                sb.Append(indent).Append(tagName).Append(" {").AppendLine() |> ignore
-            
-                if (name = "script" || name = "style") && String.IsNullOrEmpty node.InnerText |> not then
-                    sb.Append(indent).Append("    html.raw").AppendLine() |> ignore
-                    sb.Append(indent).Append("        \"\"\"").AppendLine() |> ignore
-                    sb.Append(indent).Append("        ").Append(node.InnerText.Trim()).AppendLine() |> ignore
-                    sb.Append(indent).Append("        \"\"\"").AppendLine() |> ignore
-
-                else
+                let appendAttrs () =
                     for attr in node.Attributes do
                         let attrName =
                             match attr.Name with
@@ -68,6 +65,24 @@ let convert (html: string) =
                             sb.Append(indent).Append("    ").Append(attrName).Append(" ").Append(attrValue).AppendLine() |> ignore
                         else
                             sb.Append(indent).Append("    ").Append(attrName).Append(" ").AppendStringValue(attrValue).AppendLine() |> ignore
+
+                if (name = "script" || name = "style") && String.IsNullOrEmpty node.InnerText |> not then
+                    sb.Append(indent).Append(tagName).Append(" {").AppendLine() |> ignore
+                    appendAttrs()
+                    sb.Append(indent).Append("    html.raw \"\"\"").AppendLine() |> ignore
+                    sb.Append(indent).Append("        ").Append(node.InnerText.Trim()).AppendLine() |> ignore
+                    sb.Append(indent).Append("    \"\"\"").AppendLine() |> ignore
+                    sb.Append(indent).AppendLine("}") |> ignore
+
+                else if name = "svg" then
+                    sb.Append(indent).Append("Static.html \"\"\"").AppendLine() |> ignore
+                    sb.Append(indent).Append("    ").Append(node.WriteTo()).AppendLine() |> ignore
+                    sb.Append(indent).Append("\"\"\"").AppendLine() |> ignore
+
+                else
+                    sb.Append(indent).Append(tagName).Append(" {").AppendLine() |> ignore
+                    
+                    appendAttrs()
             
                     let children = node.ChildNodes
 
@@ -82,7 +97,7 @@ let convert (html: string) =
 
                         sb.Append(indent).Append("    ").Append("]").AppendLine() |> ignore
                 
-                sb.Append(indent).AppendLine("}") |> ignore
+                    sb.Append(indent).AppendLine("}") |> ignore
 
             else
                 if directChild then

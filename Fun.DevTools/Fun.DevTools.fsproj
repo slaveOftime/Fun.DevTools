@@ -12,8 +12,8 @@
 		<Compile Include="FlatJsonList\Hooks.fs" />
 		<Compile Include="FlatJsonList\Dialogs.fs" />
 		<Compile Include="FlatJsonList\Components.fs" />
-		<Compile Include="HtmlToFunBlazor\Utils.fs" />
-		<Compile Include="HtmlToFunBlazor\Components.fs" />
+		<Compile Include="HtmlConvert\Utils.fs" />
+		<Compile Include="HtmlConvert\Components.fs" />
 		<Compile Include="App.fs" />
 		<Compile Include="Startup.fs" />
 	</ItemGroup>

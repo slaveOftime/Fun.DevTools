@@ -111,7 +111,7 @@ let app = div {
                             ]
                             yield! routes
                             subRouteCi "/Fun.DevTools.Docs" routes
-                            routeAny (HtmlToFunBlazor'.create ())
+                            routeAny (HtmlConvert'.create ())
                         ]
                     }
                 ]

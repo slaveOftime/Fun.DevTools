@@ -7,4 +7,8 @@
         a.click();
         a.remove();
     }
+
+    export const copytoClipboard = (value: string) => {
+        navigator.clipboard.writeText(value);
+    }
 }

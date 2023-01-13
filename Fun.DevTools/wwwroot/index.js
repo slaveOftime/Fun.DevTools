@@ -8,5 +8,8 @@ var utils;
         a.click();
         a.remove();
     };
+    utils.copytoClipboard = function (value) {
+        navigator.clipboard.writeText(value);
+    };
 })(utils || (utils = {}));
 //# sourceMappingURL=index.js.map

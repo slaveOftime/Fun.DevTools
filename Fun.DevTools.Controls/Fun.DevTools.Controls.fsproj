@@ -1,23 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Razor">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <TrimMode>link</TrimMode>
-    <IsTrimmable>true</IsTrimmable>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Fun.Blazor.Bindings\Microsoft.AspNetCore.Components.fs" />
-    <Compile Include="Fun.Blazor.Bindings\MudBlazor.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Dialogs.fs" />
-    <Compile Include="InputFile.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
-    <PackageReference Include="FSharp.SystemTextJson" Version="1.0.7" />
-    <PackageReference Include="Fun.Blazor" Version="2.1.2" />
-    <PackageReference Include="MudBlazor" FunBlazorStyle="CE" Version="6.1.7" />
-    <PackageReference FunBlazorNamespace="Microsoft.AspNetCore.Components" Include="Microsoft.AspNetCore.Components.Web" Version="6.0.13" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<TrimMode>link</TrimMode>
+		<IsTrimmable>true</IsTrimmable>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="Fun.Blazor.Bindings\Microsoft.AspNetCore.Components.fs" />
+		<Compile Include="Fun.Blazor.Bindings\MudBlazor.fs" />
+		<Compile Include="Fun.Blazor.Bindings\BlazorMonaco.fs" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="Dialogs.fs" />
+		<Compile Include="InputFile.fs" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+		<PackageReference Include="BlazorMonaco" Version="2.1.0" FunBlazor="" />
+		<PackageReference Include="FSharp.SystemTextJson" Version="1.0.7" />
+		<PackageReference Include="Fun.Blazor" Version="2.1.2" />
+		<PackageReference Include="MudBlazor" FunBlazorStyle="CE" Version="6.1.7" />
+		<PackageReference FunBlazorNamespace="Microsoft.AspNetCore.Components" Include="Microsoft.AspNetCore.Components.Web" Version="6.0.13" />
+	</ItemGroup>
 </Project>

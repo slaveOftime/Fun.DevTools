@@ -22,6 +22,7 @@
 		<PackageReference Include="FSharp.Data" Version="5.0.2" />
 		<PackageReference Include="Fun.Blazor.Wasm" Version="2.1.2" />
 		<PackageReference Include="Fun.Blazor.HotReload" Version="2.1.2" Condition="'$(Configuration)'=='DEBUG'" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.4">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -37,6 +38,10 @@
 	<Target Name="ConfigureTrimming" BeforeTargets="PrepareForILLink">
 		<ItemGroup>
 			<ManagedAssemblyToLink Condition="'%(Filename)' == 'FSharp.Data'">
+				<TrimMode>link</TrimMode>
+				<IsTrimmable>true</IsTrimmable>
+			</ManagedAssemblyToLink>
+			<ManagedAssemblyToLink Condition="'%(Filename)' == 'HtmlAgilityPack'">
 				<TrimMode>link</TrimMode>
 				<IsTrimmable>true</IsTrimmable>
 			</ManagedAssemblyToLink>

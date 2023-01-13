@@ -88,12 +88,12 @@ let app = div {
                             MudNavLink'() {
                                 Match NavLinkMatch.All
                                 Href ""
-                                "Flat Json List"
+                                "Html convert"
                             }
                             MudNavLink'() {
                                 Match NavLinkMatch.All
-                                Href "html-to-fun-blazor"
-                                "Html to Fun.Blazor"
+                                Href "flat-json"
+                                "Flat Json List"
                             }
                         ]
                     }
@@ -107,11 +107,11 @@ let app = div {
                         }
                         html.route [
                             let routes = [
-                                routeCi "/html-to-fun-blazor" (HtmlToFunBlazor'.create())
+                                routeCi "/flat-json" (FlatJsonList'.create())
                             ]
                             yield! routes
                             subRouteCi "/Fun.DevTools.Docs" routes
-                            routeAny (FlatJsonList'.create ())
+                            routeAny (HtmlToFunBlazor'.create ())
                         ]
                     }
                 ]

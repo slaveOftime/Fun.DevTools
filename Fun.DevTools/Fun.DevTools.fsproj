@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -19,16 +19,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FSharp.Data" Version="5.0.2" />
-		<PackageReference Include="Fun.Blazor.Wasm" Version="2.1.2" />
-		<PackageReference Include="Fun.Blazor.HotReload" Version="2.1.2" Condition="'$(Configuration)'=='DEBUG'" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.4">
+		<PackageReference Include="FSharp.Data" Version="6.3.0" />
+		<PackageReference Include="Fun.Blazor.Wasm" Version="3.1.0-beta007" />
+		<PackageReference Include="Fun.Blazor.HotReload" Version="3.1.0-beta007" Condition="'$(Configuration)'=='DEBUG'" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.2.2">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.13" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Fun.DevTools.Controls\Fun.DevTools.Controls.fsproj" />

@@ -34,16 +34,16 @@ type FlatJsonList' =
                             "*.json",
                             (fun (e, data) -> task { hook.AddFlatJson(e.File.Name, data) }),
                             label' = "Add file",
-                            startIcon = Icons.Filled.Add
+                            startIcon = Icons.Material.Filled.Add
                         )
                         MudButton'() {
                             OnClick(ignore >> hook.ExportAll)
-                            StartIcon Icons.Filled.SaveAlt
+                            StartIcon Icons.Material.Filled.SaveAlt
                             "Export all"
                         }
                         MudButton'() {
                             OnClick(ignore >> hook.ClearAll)
-                            StartIcon Icons.Filled.ClearAll
+                            StartIcon Icons.Material.Filled.ClearAll
                             "Clear"
                         }
                     ]
@@ -63,7 +63,7 @@ type FlatJsonList' =
                                 Value' binding
                                 Placeholder "Key"
                                 Adornment Adornment.Start
-                                AdornmentIcon Icons.Filled.FilterAlt
+                                AdornmentIcon Icons.Material.Filled.FilterAlt
                                 IconSize Size.Small
                             }
                         }
@@ -71,12 +71,12 @@ type FlatJsonList' =
                             let! isAsc, setAsc = hook.KeysSortIsASC.WithSetter()
                             MudIconButton'() {
                                 OnClick(fun _ -> setAsc (not isAsc))
-                                Icon(if isAsc then Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp)
+                                Icon(if isAsc then Icons.Material.Filled.KeyboardArrowDown else Icons.Material.Filled.KeyboardArrowUp)
                             }
                         }
                         MudIconButton'() {
                             OnClick(fun _ -> openAddNewKeyDialog hook)
-                            Icon Icons.Filled.Add
+                            Icon Icons.Material.Filled.Add
                         }
                     }
                 }
@@ -107,11 +107,11 @@ type FlatJsonList' =
                         Variant Variant.Text
                         MudIconButton'() {
                             OnClick(fun _ -> openConfirmDeleteDialog hook jsonKey)
-                            Icon Icons.Filled.Clear
+                            Icon Icons.Material.Filled.Clear
                         }
                         MudIconButton'() {
                             OnClick(fun _ -> openDetailEditorDialog hook jsonKey)
-                            Icon Icons.Filled.EditNote
+                            Icon Icons.Material.Filled.EditNote
                         }
                     }
                 }

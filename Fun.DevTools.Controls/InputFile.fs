@@ -15,23 +15,23 @@ type InputFile' =
         
         html.fragment [
             match label' with
-            | Some label' ->
+            | Some label ->
                 MudButton'() {
                     for' inputId
                     HtmlTag "label"
                     Size(defaultArg size' Size.Small)
-                    StartIcon(defaultArg startIcon Icons.Filled.Upload)
+                    StartIcon(defaultArg startIcon Icons.Material.Filled.Upload)
                     FullWidth(defaultArg fullwidth false)
                     Variant(defaultArg variant Variant.Text)
                     Disabled isDisabled
-                    label'
+                    label
                 }
             | None ->
                 MudIconButton'() {
                     for' inputId
                     HtmlTag "label"
                     Size(defaultArg size' Size.Small)
-                    Icon(defaultArg startIcon Icons.Filled.Upload)
+                    Icon(defaultArg startIcon Icons.Material.Filled.Upload)
                     Variant(defaultArg variant Variant.Text)
                     Disabled isDisabled
                 }

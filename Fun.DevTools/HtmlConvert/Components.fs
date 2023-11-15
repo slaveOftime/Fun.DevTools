@@ -7,6 +7,7 @@ open MudBlazor
 open BlazorMonaco
 open Fun.Blazor
 open Fun.DevTools.HtmlConvert
+open BlazorMonaco.Editor
 
 type HtmlConvert' =
 
@@ -14,8 +15,8 @@ type HtmlConvert' =
         let inputString = cval ""
         let outputString = cval ""
 
-        let mutable inputEditorRef = Option<MonacoEditor>.None
-        let mutable outputEditorRef = Option<MonacoEditor>.None
+        let mutable inputEditorRef = Option<StandaloneCodeEditor>.None
+        let mutable outputEditorRef = Option<StandaloneCodeEditor>.None
 
         let convert () = task {
             try 
@@ -38,7 +39,7 @@ type HtmlConvert' =
                 }
                 adaptiview() {
                     let! f, setF = inputString.WithSetter()
-                    MonacoEditor'() {
+                    StandaloneCodeEditor'() {
                         id "html-editor"
                         CssClass "h-full"
                         ConstructionOptions(fun _ ->
@@ -67,7 +68,7 @@ type HtmlConvert' =
                 style {
                     height "100%"
                 }
-                MonacoEditor'() {
+                StandaloneCodeEditor'() {
                     id "fun-blazor-view"
                     CssClass "h-full"
                     ConstructionOptions(fun _ ->

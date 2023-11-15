@@ -13,13 +13,13 @@ let primaryColor = "#495ca5"
 let secondaryColor = "#6677BB"
 
 
-let defaultTheme = MudTheme(Palette = Palette(Primary = primaryColor, Secondary = secondaryColor, Black = "#202120"))
+let defaultTheme = MudTheme(Palette = PaletteLight(Primary = primaryColor, Secondary = secondaryColor, Black = "#202120"))
 
 
 let darkTheme =
     MudTheme(
         Palette =
-            Palette(
+            PaletteDark(
                 Primary = primaryColor,
                 Secondary = secondaryColor,
                 Surface = "#1e1e2d",
@@ -52,7 +52,7 @@ let darkTheme =
 
 let app = div {
     style { height "100%" }
-    MudThemeProvider'() { Theme darkTheme }
+    MudThemeProvider'()
     MudDialogProvider'()
     MudSnackbarProvider'()
     ErrorBoundary'() {

@@ -1,21 +1,34 @@
-#r "nuget: BlackFox.Fake.BuildTask,0.1.3"
+#r "nuget: Fun.Build"
 #r "nuget: Fake.IO.FileSystem,5.20.4"
 
 
-open BlackFox.Fake
+open Fun.Build
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 
 
-fsi.CommandLineArgs |> Array.skip 1 |> BuildTask.setupContextFromArgv
+pipeline "deploy" {
+    stage "test" { run "dotnet test" }
+    stage "bundle" { run "dotnet publish Fun.DevTools/Fun.DevTools.fsproj -c Release -o Fun.DevTools.Release --nologo" }
+    stage "prepare assets for github" {
+        whenEnvVar "GITHUB_ENV"
+        run (fun _ ->
+            printfn "Change base-tag in index.html"
+            let targetDir = "Fun.DevTools.Release"
+            !!(targetDir </> "**" </> "index.html")
+            |> Seq.iter (File.applyReplace (fun x -> x.Replace("""<base href="/" />""", """<base href="/Fun.DevTools.Docs/" /> """)))
 
+            printfn "copy index.html to 404.html to serve the same file when a file is not found"
+            File.read "Fun.DevTools.Release/wwwroot/index.html" |> File.write false "Fun.DevTools.Release/wwwroot/404.html"
 
-let processGitHubDocs =
-    BuildTask.create "ProcessGitHubDocs" [] {
-        let targetDir = "Fun.DevTools.Release"
-        !!(targetDir </> "**" </> "index.html")
-        |> Seq.iter (File.applyReplace (fun x -> x.Replace("""<base href="/" />""", """<base href="/Fun.DevTools.Docs/" /> """)))
+            printfn
+                "add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)"
+            File.create "Fun.DevTools.Release/wwwroot/.nojekyll"
+        )
     }
+    runIfOnlySpecified
+}
 
-BuildTask.runOrDefault processGitHubDocs
+
+tryPrintPipelineCommandHelp ()

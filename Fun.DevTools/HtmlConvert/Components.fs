@@ -46,7 +46,7 @@ type HtmlConvert' =
                             StandaloneEditorConstructionOptions(
                                 AutomaticLayout = true,
                                 Language = "html",
-                                Theme = "vs-dark",
+                                Theme = "vs-light",
                                 Value = f
                             )
                         )
@@ -75,7 +75,7 @@ type HtmlConvert' =
                         StandaloneEditorConstructionOptions(
                             AutomaticLayout = true,
                             Language = "fsharp",
-                            Theme = "vs-dark",
+                            Theme = "vs-light",
                             ReadOnly = true
                         )
                     )

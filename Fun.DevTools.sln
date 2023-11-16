@@ -5,9 +5,7 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Fun.DevTools", "Fun.DevTools\Fun.DevTools.fsproj", "{B89EE7CC-A1BB-4171-982F-29445496FFCB}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Fun.DevTools.Controls", "Fun.DevTools.Controls\Fun.DevTools.Controls.fsproj", "{935C17D4-A029-4624-AA20-CDE8F9B7E1E3}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Fun.DevTools.Tests", "Fun.DevTools.Tests\Fun.DevTools.Tests.fsproj", "{DB4DFBF4-6202-4A74-8C8A-4CD42D3C628C}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Fun.DevTools.Tests", "Fun.DevTools.Tests\Fun.DevTools.Tests.fsproj", "{DB4DFBF4-6202-4A74-8C8A-4CD42D3C628C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{B89EE7CC-A1BB-4171-982F-29445496FFCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B89EE7CC-A1BB-4171-982F-29445496FFCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B89EE7CC-A1BB-4171-982F-29445496FFCB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{935C17D4-A029-4624-AA20-CDE8F9B7E1E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{935C17D4-A029-4624-AA20-CDE8F9B7E1E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{935C17D4-A029-4624-AA20-CDE8F9B7E1E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{935C17D4-A029-4624-AA20-CDE8F9B7E1E3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DB4DFBF4-6202-4A74-8C8A-4CD42D3C628C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DB4DFBF4-6202-4A74-8C8A-4CD42D3C628C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB4DFBF4-6202-4A74-8C8A-4CD42D3C628C}.Release|Any CPU.ActiveCfg = Release|Any CPU

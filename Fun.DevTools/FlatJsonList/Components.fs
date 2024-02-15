@@ -12,7 +12,7 @@ open Fun.DevTools.FlatJsonList
 type FlatJsonList' =
 
     static member create() =
-        html.comp (fun (hook: IComponentHook) ->
+        html.inject (fun (hook: IComponentHook) ->
             hook.InitFlatJsonList()
 
 

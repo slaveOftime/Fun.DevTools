@@ -57,22 +57,25 @@ let rec createJsonFromFlatList spliter (path: string) (parsedFile: List<string *
     parsedFile
     |> List.groupBy (fst >> getKey path)
     |> List.map (fun (name, ls) ->
-        let subPath = path </> name
-        let flatedKeyValues, restKeyValues = splitKeyValues subPath ls
+        match ls with
+        | [ k, v ] when name = k -> Generic.KeyValuePair(name, JsonValue.Create(v))
+        | _ ->
+            let subPath = path </> name
+            let flatedKeyValues, restKeyValues = splitKeyValues subPath ls
 
-        let keyValues =
-            let kvs =
-                flatedKeyValues
-                |> List.map (fun (k, v) -> Generic.KeyValuePair(getKey subPath k, JsonValue.Create v))
-                |> Generic.Dictionary
-            createJsonFromFlatList spliter subPath restKeyValues
-            |> Seq.fold
-                (fun (state: Generic.Dictionary<_, _>) (KeyValue (k, v)) ->
-                    state.Add(k, v)
-                    state
-                )
-                kvs
+            let keyValues =
+                let kvs =
+                    flatedKeyValues
+                    |> List.map (fun (k, v) -> Generic.KeyValuePair(getKey subPath k, JsonValue.Create v))
+                    |> Generic.Dictionary
+                createJsonFromFlatList spliter subPath restKeyValues
+                |> Seq.fold
+                    (fun (state: Generic.Dictionary<_, _>) (KeyValue(k, v)) ->
+                        state.Add(k, v)
+                        state
+                    )
+                    kvs
 
-        Generic.KeyValuePair(name, JsonValue.Create keyValues)
+            Generic.KeyValuePair(name, JsonValue.Create keyValues)
     )
     |> Generic.Dictionary

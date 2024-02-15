@@ -7,6 +7,7 @@ open Fun.DevTools.FlatJsonList
 
 let expectedJson =
     """{
+  "title": "hi",
   "app": {
     "title": "\u003Ch1\u003Ewintool\u003C/h1\u003E",
     "version": "0.0.1",
@@ -22,6 +23,7 @@ let expectedJson =
 
 
 let expectedFlattedKeyValues = [
+    "title", "hi"
     "app.title", "<h1>wintool</h1>"
     "app.version", "0.0.1"
     "app.msg.description", "de1"

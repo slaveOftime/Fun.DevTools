@@ -3,21 +3,20 @@
 open System.IO
 open Microsoft.AspNetCore.Components.Forms
 open Fun.Blazor
-open Fun.Blazor.Operators
 open MudBlazor
 
 
 type InputFile' =
 
-    static member upload(accept': string, upload, ?label': string, ?startIcon, ?size', ?fullwidth, ?variant, ?onError, ?isDisabled) =
+    static member upload(accept: string, upload, ?label': string, ?startIcon, ?size', ?fullwidth, ?variant, ?onError, ?isDisabled) =
         let inputId = "upload-file-" + (defaultArg label' "").GetHashCode().ToString()
         let isDisabled = defaultArg isDisabled false
-        
+
         html.fragment [
             match label' with
             | Some label ->
                 MudButton'() {
-                    for' inputId
+                    "for", inputId
                     HtmlTag "label"
                     Size(defaultArg size' Size.Small)
                     StartIcon(defaultArg startIcon Icons.Material.Filled.Upload)
@@ -28,7 +27,7 @@ type InputFile' =
                 }
             | None ->
                 MudIconButton'() {
-                    for' inputId
+                    "for", inputId
                     HtmlTag "label"
                     Size(defaultArg size' Size.Small)
                     Icon(defaultArg startIcon Icons.Material.Filled.Upload)
@@ -36,9 +35,9 @@ type InputFile' =
                     Disabled isDisabled
                 }
             InputFile'() {
-                "hidden" => "true"
+                "accept", accept
                 id inputId
-                accept accept'
+                hidden
                 OnChange(fun e -> task {
                     try
                         let stream = e.File.OpenReadStream(maxAllowedSize = 1024L * 1024L * 15L)
@@ -48,7 +47,6 @@ type InputFile' =
                         do! upload (e, data)
                     with ex ->
                         (defaultArg onError ignore) (ex)
-                }
-                )
+                })
             }
         ]

@@ -5,9 +5,10 @@ open FSharp.Data.Adaptive
 open Microsoft.JSInterop
 open MudBlazor
 open BlazorMonaco
+open BlazorMonaco.Editor
+open Microsoft.AspNetCore.Components.Web
 open Fun.Blazor
 open Fun.DevTools.HtmlConvert
-open BlazorMonaco.Editor
 
 type HtmlConvert' =
 
@@ -76,6 +77,7 @@ type HtmlConvert' =
             }
 
             fragment {
+                PageTitle'' { "Html Converter" }
                 div {
                     style {
                         displayFlex

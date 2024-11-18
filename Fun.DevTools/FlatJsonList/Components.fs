@@ -5,6 +5,7 @@ open System.Collections
 open FSharp.Data.Adaptive
 open MudBlazor
 open Fun.Blazor
+open Microsoft.AspNetCore.Components.Web
 open Fun.DevTools.Controls
 open Fun.DevTools.FlatJsonList
 
@@ -213,6 +214,7 @@ type FlatJsonList' =
 
 
             fragment {
+                PageTitle'' { "Flat Json" }
                 MudText'' {
                     style {
                         marginTop 20

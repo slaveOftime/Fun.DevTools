@@ -6,6 +6,7 @@ open Fun.Blazor
 open MudBlazor
 open BlazorMonaco
 open BlazorMonaco.Editor
+open Microsoft.AspNetCore.Components.Web
 
 
 type Base64Converter =
@@ -54,6 +55,7 @@ type Base64Converter =
 
 
                 fragment {
+                    PageTitle'' { "Base64 Converter" }
                     div {
                         style {
                             padding 12

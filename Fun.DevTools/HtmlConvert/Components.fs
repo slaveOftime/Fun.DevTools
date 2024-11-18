@@ -43,7 +43,7 @@ type HtmlConvert' =
                         id "html-editor"
                         CssClass "h-full"
                         ConstructionOptions(fun _ ->
-                            StandaloneEditorConstructionOptions(AutomaticLayout = true, Language = "html", Theme = "vs-light", Value = f)
+                            StandaloneEditorConstructionOptions(AutomaticLayout = true, Language = "html", Theme = "vs-dark", Value = f)
                         )
                         OnDidChangeModelContent(fun _ -> task {
                             match inputEditorRef with
@@ -75,7 +75,7 @@ type HtmlConvert' =
                 }
             }
 
-            html.fragment [
+            fragment {
                 div {
                     style {
                         displayFlex
@@ -131,5 +131,5 @@ type HtmlConvert' =
                         }
                     }
                 }
-            ]
+            }
         )

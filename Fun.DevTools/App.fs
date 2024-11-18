@@ -58,6 +58,11 @@ let app = div {
                     Href "flat-json"
                     "Flat Json List"
                 }
+                MudNavLink'' {
+                    Match NavLinkMatch.All
+                    Href "base64"
+                    "Base64 convert"
+                }
             }
             MudMainContent'' {
                 style {
@@ -68,7 +73,7 @@ let app = div {
                     padding 10
                 }
                 html.route [|
-                    let routes = [ routeCi "/flat-json" (FlatJsonList'.create ()) ]
+                    let routes = [ routeCi "/flat-json" (FlatJsonList'.create ()); routeCi "/base64" (Base64Converter.Create()) ]
                     yield! routes
                     subRouteCi "/Fun.DevTools.Docs" routes
                     routeAny (HtmlConvert'.create ())

@@ -3,6 +3,7 @@
 
 
 open Fun.Build
+open Fun.Build.Github
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
@@ -12,7 +13,7 @@ pipeline "deploy" {
     stage "test" { run "dotnet test" }
     stage "bundle" { run "dotnet publish Fun.DevTools/Fun.DevTools.fsproj -c Release -o Fun.DevTools.Release --nologo" }
     stage "prepare assets for github" {
-        whenEnvVar "GITHUB_ENV"
+        whenGithubAction
         run (fun _ ->
             printfn "Change base-tag in index.html"
             let targetDir = "Fun.DevTools.Release"

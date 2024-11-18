@@ -30,11 +30,10 @@ type FunDialog() =
         match dialogView with
         | None ->
             let newView =
-                this.RenderFn
-                    {
-                        Close = this.CloseDialog
-                        Options = this.MudDialogInstance.Options
-                    }
+                this.RenderFn {
+                    Close = this.CloseDialog
+                    Options = this.MudDialogInstance.Options
+                }
             dialogView <- Some newView
             newView
 

@@ -15,13 +15,12 @@ open Fun.Blazor
 open Fun.DevTools
 
 
-type State =
-    {
-        Spliter: string
-        Keys: string list
-        Jsons: Map<string, Dictionary<string, string>>
-        BaseJsonName: string option
-    }
+type State = {
+    Spliter: string
+    Keys: string list
+    Jsons: Map<string, Dictionary<string, string>>
+    BaseJsonName: string option
+} with
 
     static member DefaultValue = {
         Spliter = "."
@@ -60,7 +59,7 @@ type IComponentHook with
             |> (if isAsc then Seq.sort else Seq.sortDescending)
             |> Seq.toList
     }
-    
+
 
     /// Load data from local cache and set auto save timer
     member hook.InitFlatJsonList() =
@@ -83,8 +82,7 @@ type IComponentHook with
                 |> ignore
             )
             timer.Start()
-        }
-        )
+        })
 
 
     member hook.ClearAll() =
@@ -104,10 +102,10 @@ type IComponentHook with
             let sw = Stopwatch.StartNew()
             let state = hook.State.Value
 
-            for KeyValue (fileName, parsedFile) in state.Jsons do
+            for KeyValue(fileName, parsedFile) in state.Jsons do
                 let jsonStr =
                     parsedFile
-                    |> Seq.map (fun (KeyValue (k, v)) -> k, v)
+                    |> Seq.map (fun (KeyValue(k, v)) -> k, v)
                     |> Seq.toList
                     |> createJsonFromFlatList state.Spliter ""
                     |> fun x -> JsonSerializer.Serialize(x, jsonSerializeOptions)
@@ -136,10 +134,11 @@ type IComponentHook with
                 let isFirstJson = state.Jsons.Count = 0
                 let jsons = state.Jsons |> Map.add jsonName flattedJson
 
-                { state with
-                    Jsons = jsons
-                    BaseJsonName = if isFirstJson then Some jsonName else state.BaseJsonName
-                    Keys = if isFirstJson then jsons[jsonName].Keys |> Seq.toList else state.Keys
+                {
+                    state with
+                        Jsons = jsons
+                        BaseJsonName = if isFirstJson then Some jsonName else state.BaseJsonName
+                        Keys = if isFirstJson then jsons[jsonName].Keys |> Seq.toList else state.Keys
                 }
             )
 

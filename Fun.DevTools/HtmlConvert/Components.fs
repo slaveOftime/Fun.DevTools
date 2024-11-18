@@ -11,44 +11,39 @@ open BlazorMonaco.Editor
 
 type HtmlConvert' =
 
-    static member create () = html.inject (fun (jsRuntime: IJSRuntime, snackbar: ISnackbar) ->
-        let inputString = cval ""
-        let outputString = cval ""
+    static member create() =
+        html.inject (fun (jsRuntime: IJSRuntime, snackbar: ISnackbar) ->
+            let inputString = cval ""
+            let outputString = cval ""
 
-        let mutable inputEditorRef = Option<StandaloneCodeEditor>.None
-        let mutable outputEditorRef = Option<StandaloneCodeEditor>.None
+            let mutable inputEditorRef = Option<StandaloneCodeEditor>.None
+            let mutable outputEditorRef = Option<StandaloneCodeEditor>.None
 
-        let convert () = task {
-            try 
-                let result = convert inputString.Value 
-                outputString.Publish result
-                match outputEditorRef with
-                | None -> ()
-                | Some e -> do! e.SetValue result
-                snackbar.Add("Converted successfully", severity = Severity.Success) |> ignore
-            with ex ->
-                snackbar.Add(ex.Message, severity = Severity.Error) |> ignore
-        }
+            let convert () = task {
+                try
+                    let result = convert inputString.Value
+                    outputString.Publish result
+                    match outputEditorRef with
+                    | None -> ()
+                    | Some e -> do! e.SetValue result
+                    snackbar.Add("Converted successfully", severity = Severity.Success) |> ignore
+                with ex ->
+                    snackbar.Add(ex.Message, severity = Severity.Error) |> ignore
+            }
 
-        let inputEditor =
-            MudPaper'() {
+            let inputEditor = MudPaper'' {
                 class' "p-2"
                 style {
                     overflowHidden
                     height "100%"
                 }
-                adaptiview() {
+                adapt {
                     let! f, setF = inputString.WithSetter()
-                    StandaloneCodeEditor'() {
+                    StandaloneCodeEditor'' {
                         id "html-editor"
                         CssClass "h-full"
                         ConstructionOptions(fun _ ->
-                            StandaloneEditorConstructionOptions(
-                                AutomaticLayout = true,
-                                Language = "html",
-                                Theme = "vs-light",
-                                Value = f
-                            )
+                            StandaloneEditorConstructionOptions(AutomaticLayout = true, Language = "html", Theme = "vs-light", Value = f)
                         )
                         OnDidChangeModelContent(fun _ -> task {
                             match inputEditorRef with
@@ -62,20 +57,17 @@ type HtmlConvert' =
                 }
             }
 
-        let outputEditor =
-            MudPaper'() {
+            let outputEditor = MudPaper'' {
                 class' "p-2"
-                style {
-                    height "100%"
-                }
-                StandaloneCodeEditor'() {
+                style { height "100%" }
+                StandaloneCodeEditor'' {
                     id "fun-blazor-view"
                     CssClass "h-full"
                     ConstructionOptions(fun _ ->
                         StandaloneEditorConstructionOptions(
                             AutomaticLayout = true,
                             Language = "fsharp",
-                            Theme = "vs-light",
+                            Theme = "vs-dark",
                             ReadOnly = true
                         )
                     )
@@ -83,16 +75,15 @@ type HtmlConvert' =
                 }
             }
 
-        html.fragment [
-            div {
-                style {
-                    displayFlex
-                    alignItemsCenter
-                    justifyContentCenter
-                    margin 20
-                }
-                childContent [
-                    MudText'() {
+            html.fragment [
+                div {
+                    style {
+                        displayFlex
+                        alignItemsCenter
+                        justifyContentCenter
+                        margin 20
+                    }
+                    MudText'' {
                         style {
                             textAlignCenter
                             textTransformUppercase
@@ -102,35 +93,31 @@ type HtmlConvert' =
                         Color Color.Primary
                         "Convert html to CE syntax"
                     }
-                    MudButton'() {
-                        OnClick(fun _ -> convert())
+                    MudButton'' {
+                        OnClick(fun _ -> convert ())
                         Color Color.Primary
                         Variant Variant.Filled
                         "Convert"
                     }
-                ]
-            }
-            MudGrid'() {
-                style {
-                    height "100%"
-                    overflowHidden
                 }
-                childContent [
-                    MudItem'() {
+                MudGrid'' {
+                    style {
+                        height "100%"
+                        overflowHidden
+                    }
+                    MudItem'' {
                         xs 6
-                        style {
-                            height "100%"
-                        }
+                        style { height "100%" }
                         inputEditor
                     }
-                    MudItem'() {
+                    MudItem'' {
                         xs 6
                         style {
                             height "100%"
                             positionRelative
                         }
                         outputEditor
-                        MudIconButton'() {
+                        MudIconButton'' {
                             style {
                                 positionAbsolute
                                 right 10
@@ -143,7 +130,6 @@ type HtmlConvert' =
                             })
                         }
                     }
-                ]
-            }
-        ]
-    )
+                }
+            ]
+        )

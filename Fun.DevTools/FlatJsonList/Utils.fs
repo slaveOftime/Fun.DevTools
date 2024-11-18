@@ -7,7 +7,6 @@ open System.Text.Json.Nodes
 open System.Text.Unicode
 open System.Text.Encodings.Web
 open System.Collections
-open FSharp.Data.Adaptive
 
 
 let jsonSerializeOptions = JsonSerializerOptions(WriteIndented = true, Encoder = JavaScriptEncoder.Create UnicodeRanges.All)

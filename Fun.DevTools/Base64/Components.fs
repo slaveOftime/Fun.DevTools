@@ -45,8 +45,26 @@ type Base64Converter =
                     match inputEditorRef, outputEditorRef with
                     | ValueSome inputRef, ValueSome outputRef ->
                         try
+                            let sb = StringBuilder()
+
                             let! value = inputRef.GetValue()
-                            do! outputRef.SetValue(Convert.FromBase64String value |> Encoding.UTF8.GetString)
+
+                            value.Split('.', '_')
+                            |> Seq.iter (fun x ->
+                                try
+                                    let mod4 = x.Length % 4
+                                    let paddedBase64 = if mod4 > 0 then x + String('=', 4 - mod4) else x
+                                    Convert.FromBase64String paddedBase64 |> Encoding.UTF8.GetString
+                                with ex ->
+                                    sprintf "%s\n> convert failed: %s" x ex.Message
+                                |> sb.AppendLine
+                                |> ignore
+
+                                sb.AppendLine() |> ignore
+                            )
+
+                            do! outputRef.SetValue(sb.ToString())
+
                         with ex ->
                             snack.Add(ex.ToString(), severity = Severity.Error) |> ignore
 
